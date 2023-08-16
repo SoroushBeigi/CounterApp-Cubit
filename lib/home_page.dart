@@ -27,7 +27,12 @@ class _MyHomePageState extends State<MyHomePage> {
             //And Flutter will produce errors because the function call has happened while it was rendering widgets.
             //So a better way is to use BlocListener to call the function, and when we are using BlocBuilder even a better way
             //Would be replacing it with a BlocConsumer.
+
             BlocConsumer<CounterCubit, int>(
+
+              //Only show snackbar in -10 to 10 range!
+              listenWhen: (previous, current) => previous<10 && previous>-10,
+
               listener: (context, state) =>
                   ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -35,6 +40,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   duration: const Duration(microseconds: 500),
                 ),
               ),
+
+              //Limiting the counter to -15 to 15 range!
+              buildWhen: (previous, current) => previous<15 && previous>-15,
               builder: (context, state) => Text(
                 state.toString(),
                 style: const TextStyle(
@@ -51,6 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       BlocProvider.of<CounterCubit>(context).decrease(),
                   child: const Text('-'),
                 ),
+                const SizedBox(width: 20,),
                 ElevatedButton(
                   onPressed: () =>
                       BlocProvider.of<CounterCubit>(context).increase(),
