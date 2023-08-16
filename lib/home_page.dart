@@ -21,7 +21,20 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            BlocBuilder<CounterCubit, int>(
+
+            //You can use BlocConsumer, which is a combination of BlocListener and BlocBuilder.
+            //Calling a function like showSnackBar won't work here, because we can't call it in the middle of our widget trees
+            //And Flutter will produce errors because the function call has happened while it was rendering widgets.
+            //So a better way is to use BlocListener to call the function, and when we are using BlocBuilder even a better way
+            //Would be replacing it with a BlocConsumer.
+            BlocConsumer<CounterCubit, int>(
+              listener: (context, state) =>
+                  ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('New Value: ${state.toString()}'),
+                  duration: const Duration(microseconds: 500),
+                ),
+              ),
               builder: (context, state) => Text(
                 state.toString(),
                 style: const TextStyle(
