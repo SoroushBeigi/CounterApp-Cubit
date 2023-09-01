@@ -21,7 +21,6 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-
             //You can use BlocConsumer, which is a combination of BlocListener and BlocBuilder.
             //Calling a function like showSnackBar won't work here, because we can't call it in the middle of our widget trees
             //And Flutter will produce errors because the function call has happened while it was rendering widgets.
@@ -29,9 +28,9 @@ class _MyHomePageState extends State<MyHomePage> {
             //Would be replacing it with a BlocConsumer.
 
             BlocConsumer<CounterCubit, int>(
-
               //Only show snackbar in -10 to 10 range!
-              listenWhen: (previous, current) => previous<10 && previous>-10,
+              listenWhen: (previous, current) =>
+                  previous < 10 && previous > -10,
 
               listener: (context, state) =>
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -42,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
 
               //Limiting the counter to -15 to 15 range!
-              buildWhen: (previous, current) => previous<15 && previous>-15,
+              buildWhen: (previous, current) => previous < 15 && previous > -15,
               builder: (context, state) => Text(
                 state.toString(),
                 style: const TextStyle(
@@ -51,6 +50,24 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ),
+
+            // You can also use context.watch() like this,
+            // Take note that you should wrap your widget with a builder,
+            // Otherwise it will use the higher-level BuildContext and the whole page will rebuild.
+
+            // Builder(
+            //   builder: (context) {
+            //     var state = context.watch<CounterCubit>().state;
+            //     return Text(
+            //       state.toString(),
+            //       style: const TextStyle(
+            //         fontWeight: FontWeight.w600,
+            //         fontSize: 25,
+            //       ),
+            //     );
+            //   }
+            // ),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -59,7 +76,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       BlocProvider.of<CounterCubit>(context).decrease(),
                   child: const Text('-'),
                 ),
-                const SizedBox(width: 20,),
+                const SizedBox(
+                  width: 20,
+                ),
                 ElevatedButton(
                   onPressed: () =>
                       BlocProvider.of<CounterCubit>(context).increase(),
